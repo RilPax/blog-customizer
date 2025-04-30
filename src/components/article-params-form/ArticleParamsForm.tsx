@@ -84,7 +84,7 @@ export const ArticleParamsForm = ({
 					[styles.container_open]: isFormOpen,
 				})}>
 				<form className={styles.form} onSubmit={(evt) => handleSubmit(evt)}>
-					<Text size={31} weight={800}>
+					<Text size={31} weight={800} uppercase>
 						Задайте параметры
 					</Text>
 					<Select
