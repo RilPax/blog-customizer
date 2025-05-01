@@ -1,6 +1,6 @@
 import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
-import { FormEvent, useEffect, useRef, useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 
 import styles from './ArticleParamsForm.module.scss';
 import clsx from 'clsx';
@@ -11,50 +11,35 @@ import {
 	ArticleStateType,
 	backgroundColors,
 	contentWidthArr,
+	defaultArticleState,
 	fontColors,
 	fontFamilyOptions,
 	fontSizeOptions,
 	OptionType,
 } from 'src/constants/articleProps';
 import { Text } from 'src/ui/text';
+import { useClickOutside } from './hooks/useClickOutside';
 
 type ArticleParamsFormProps = {
-	articleSettings: ArticleStateType;
 	onChange: React.Dispatch<React.SetStateAction<ArticleStateType>>;
 };
 
-export const ArticleParamsForm = ({
-	articleSettings,
-	onChange,
-}: ArticleParamsFormProps) => {
+export const ArticleParamsForm = ({ onChange }: ArticleParamsFormProps) => {
 	const [isFormOpen, setIsFormOpen] = useState(false);
 	const [articleSettingsState, setArticleSettingsState] =
-		useState(articleSettings);
+		useState(defaultArticleState);
 
 	const containerRef = useRef<HTMLElement | null>(null);
 
-	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (
-				isFormOpen &&
-				containerRef.current &&
-				!containerRef.current.contains(event.target as Node)
-			) {
-				setIsFormOpen(false);
-			}
-		};
-
-		document.addEventListener('mousedown', handleClickOutside);
-		return () => document.removeEventListener('mousedown', handleClickOutside);
-	}, [isFormOpen]);
+	useClickOutside(containerRef, () => setIsFormOpen(false), isFormOpen);
 
 	const handleClick = () => {
 		setIsFormOpen(!isFormOpen);
 	};
 
 	const handleReset = () => {
-		setArticleSettingsState(articleSettings);
-		onChange(articleSettings);
+		setArticleSettingsState(defaultArticleState);
+		onChange(defaultArticleState);
 	};
 
 	const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
@@ -63,7 +48,7 @@ export const ArticleParamsForm = ({
 	};
 
 	const handleChange =
-		(key: keyof typeof articleSettings) => (newOption: OptionType) => {
+		(key: keyof typeof defaultArticleState) => (newOption: OptionType) => {
 			setArticleSettingsState((prev) => ({
 				...prev,
 				[key]: newOption,
